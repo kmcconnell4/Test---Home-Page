@@ -121,15 +121,11 @@
       display: flex;
       align-items: flex-end;
       gap: 0;
-    }
-
-    .roni-popup.slide-out {
-      right: -500px;
-      transition: right 0.6s ease-in;
+      transition: right 1s ease-in-out;
     }
 
     .roni-popup.visible {
-      animation: bounce-in 1.2s ease forwards;
+      right: 20px;
     }
 
     .roni-popup img {
@@ -185,14 +181,18 @@
       const popup = document.getElementById('roni-popup');
       if (popup.classList.contains('visible')) {
         popup.classList.remove('visible');
-        popup.classList.add('slide-out');
-        popup.addEventListener('transitionend', function handler() {
-          popup.classList.remove('slide-out');
-          popup.removeEventListener('transitionend', handler);
-        });
       } else {
-        popup.classList.remove('slide-out');
         popup.classList.add('visible');
+        popup.animate([
+          { right: '-500px' },
+          { right: '20px', offset: 0.4 },
+          { right: '50px', offset: 0.5 },
+          { right: '20px', offset: 0.6 },
+          { right: '40px', offset: 0.7 },
+          { right: '20px', offset: 0.8 },
+          { right: '30px', offset: 0.9 },
+          { right: '20px' }
+        ], { duration: 1200, easing: 'ease' });
       }
     }
 
