@@ -28,6 +28,14 @@
       font-family: 'Segoe UI', sans-serif;
     }
 
+    .page-wrapper {
+      display: flex;
+      align-items: stretch;
+      gap: 2rem;
+      position: relative;
+      z-index: 1;
+    }
+
     @keyframes twinkle {
       0%, 100% { opacity: 0.2; }
       50% { opacity: 1; }
@@ -188,16 +196,260 @@
       border-bottom: 10px solid transparent;
       border-left: 14px solid white;
     }
+
+    /* ================================
+       Weather Widget
+       ================================ */
+
+    .weather-widget {
+      position: relative;
+      z-index: 1;
+      background: rgba(255, 255, 255, 0.15);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border-radius: 24px;
+      padding: 20px 24px;
+      max-width: 300px;
+      font-family: inherit;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      color: white;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .weather-loading,
+    .weather-error {
+      font-size: 0.9rem;
+      text-align: center;
+      padding: 16px 0;
+      color: rgba(255, 255, 255, 0.8);
+    }
+
+    .weather-error {
+      color: #ff9b9b;
+    }
+
+    .weather-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 8px;
+      margin-bottom: 12px;
+      flex-wrap: wrap;
+    }
+
+    .weather-location {
+      margin: 0;
+      font-size: 1rem;
+      font-weight: 600;
+      color: white;
+    }
+
+    .weather-controls {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .weather-btn {
+      background: rgba(255, 255, 255, 0.2);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      border-radius: 6px;
+      padding: 4px 8px;
+      font-size: 0.75rem;
+      cursor: pointer;
+      color: white;
+      transition: background 0.2s ease;
+      white-space: nowrap;
+    }
+
+    .weather-btn:hover {
+      background: rgba(255, 255, 255, 0.35);
+    }
+
+    .weather-btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    .unit-toggle {
+      display: flex;
+      border-radius: 6px;
+      overflow: hidden;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      cursor: pointer;
+    }
+
+    .unit-option {
+      padding: 4px 10px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: rgba(255, 255, 255, 0.6);
+      background: transparent;
+      transition: background 0.2s ease, color 0.2s ease;
+      user-select: none;
+    }
+
+    .unit-option.unit-active {
+      background: rgba(255, 255, 255, 0.3);
+      color: white;
+    }
+
+    .weather-main {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 4px;
+    }
+
+    .weather-icon {
+      font-size: 2.5rem;
+    }
+
+    .weather-temp {
+      font-size: 2.2rem;
+      font-weight: 700;
+      color: white;
+    }
+
+    .weather-condition {
+      margin: 0 0 10px 0;
+      font-size: 0.95rem;
+      color: rgba(255, 255, 255, 0.85);
+    }
+
+    .weather-details {
+      display: flex;
+      gap: 16px;
+      font-size: 0.875rem;
+      color: rgba(255, 255, 255, 0.8);
+      margin-bottom: 4px;
+    }
+
+    .weather-divider {
+      border: none;
+      border-top: 1px solid rgba(255, 255, 255, 0.25);
+      margin: 14px 0;
+    }
+
+    .weather-forecast-header {
+      font-size: 0.8rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: rgba(255, 255, 255, 0.6);
+      margin-bottom: 8px;
+    }
+
+    .weather-forecast {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .forecast-day {
+      display: grid;
+      grid-template-columns: 40px 28px 1fr 1fr;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.875rem;
+    }
+
+    .forecast-label {
+      font-weight: 600;
+      color: rgba(255, 255, 255, 0.9);
+    }
+
+    .forecast-emoji {
+      font-size: 1.1rem;
+    }
+
+    .forecast-high {
+      color: white;
+      font-weight: 600;
+      text-align: right;
+    }
+
+    .forecast-low {
+      color: rgba(255, 255, 255, 0.6);
+      text-align: right;
+    }
+
+    .weather-updated {
+      margin: 12px 0 0 0;
+      font-size: 0.75rem;
+      color: rgba(255, 255, 255, 0.5);
+      text-align: right;
+    }
   </style>
 </head>
 <body>
   <div class="stars" id="stars"></div>
-  <div class="container">
+  <div class="page-wrapper">
+    <div class="container">
     <img src="Photos/Winkeler_Kirsten.jpg" alt="Profile photo" class="profile-photo" onclick="toggleRoni()">
     <h1>Hello World!</h1>
     <p class="welcome-msg">Welcome to my page! Thanks for stopping by.</p>
     <a href="mailto:contact@example.com" class="contact-btn" onclick="launchConfetti(event)">Contact me</a>
   </div>
+
+  <!-- Weather Widget -->
+  <div id="weather-widget" class="weather-widget">
+
+    <!-- Loading State -->
+    <div id="weather-loading" class="weather-loading">
+      Loading weather...
+    </div>
+
+    <!-- Error State -->
+    <div id="weather-error" class="weather-error" style="display:none;">
+      ⚠️ Weather unavailable. Please try again later.
+    </div>
+
+    <!-- Weather Content -->
+    <div id="weather-content" class="weather-content" style="display:none;">
+
+      <!-- Header: Location + Buttons -->
+      <div class="weather-header">
+        <h3 id="weather-location" class="weather-location">--</h3>
+        <div class="weather-controls">
+          <button id="weather-locate-btn" class="weather-btn">
+            📍 Current Location
+          </button>
+          <div class="unit-toggle" id="weather-unit-btn">
+            <span class="unit-option unit-active" data-unit="fahrenheit">°F</span>
+            <span class="unit-option" data-unit="celsius">°C</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Current Conditions -->
+      <div class="weather-main">
+        <span id="weather-icon" class="weather-icon"></span>
+        <span id="weather-temp" class="weather-temp"></span>
+      </div>
+      <p id="weather-condition" class="weather-condition"></p>
+      <div class="weather-details">
+        <span id="weather-humidity">💧 --%</span>
+        <span id="weather-wind">💨 -- mph</span>
+      </div>
+
+      <!-- Divider -->
+      <hr class="weather-divider" />
+
+      <!-- 5-Day Forecast -->
+      <div class="weather-forecast-header">5-Day Forecast</div>
+      <div id="weather-forecast" class="weather-forecast"></div>
+
+      <!-- Last Updated Timestamp -->
+      <p id="weather-updated" class="weather-updated"></p>
+
+    </div>
+  </div>
+  </div>
+
   <div class="roni-popup" id="roni-popup">
     <div class="speech-bubble">BORK! BORK!</div>
     <img src="Photos/roni.jpeg" alt="Roni">
@@ -310,5 +562,6 @@
       }
     }
   </script>
+  <script src="weather.js"></script>
 </body>
 </html>
