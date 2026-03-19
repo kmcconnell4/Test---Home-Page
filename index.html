@@ -43,7 +43,7 @@
     }
 
     h1 {
-      font-size: 4rem;
+      font-size: 3rem;
       font-weight: 700;
       letter-spacing: -1px;
       margin-bottom: 0.75rem;
@@ -68,12 +68,14 @@
       cursor: pointer;
       text-decoration: none;
       box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
-      transition: transform 0.2s, box-shadow 0.2s;
+      transition: transform 0.3s ease, box-shadow 0.3s ease, background 0.3s ease, color 0.3s ease;
     }
 
     .contact-btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 6px 28px rgba(0, 0, 0, 0.3);
+      transform: translateY(-3px) scale(1.05);
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.35);
+      background: #1a6fe8;
+      color: white;
     }
 
     .contact-btn:active {
