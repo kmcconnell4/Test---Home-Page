@@ -11,10 +11,13 @@
   <div class="stars" id="stars"></div>
   <div class="page-wrapper">
     <div class="container">
-    <img src="Photos/Winkeler_Kirsten.jpg" alt="Profile photo" class="profile-photo">
+    <div class="profile-photo-wrapper">
+      <img src="Photos/Winkeler_Kirsten.jpg" alt="Profile photo" class="profile-photo" onclick="showProfileBubble()">
+      <div class="profile-bubble" id="profile-bubble"></div>
+    </div>
     <h1>Hello World!</h1>
     <p class="welcome-msg">Welcome to my page! Thanks for stopping by.</p>
-    <a href="mailto:contact@example.com" class="contact-btn" onclick="launchConfetti(event); toggleRoni();">Contact me</a>
+    <button class="contact-btn" onclick="launchConfetti(event); toggleRoni();">Contact me</button>
   </div>
 
   <!-- Weather Widget -->
@@ -72,12 +75,37 @@
   </div>
   </div>
 
-  <div class="roni-popup" id="roni-popup">
+  <div class="roni-popup" id="roni-popup" onclick="toggleRoni()">
     <div class="speech-bubble">BORK! BORK!</div>
     <img src="Photos/roni.jpeg" alt="Roni">
   </div>
   <canvas id="confetti-canvas"></canvas>
   <script>
+    // Profile bubble phrases — add your phrases here!
+    const profilePhrases = [
+      'Look at my cutie tootie lil Protogen test site!',
+      'No hard pants 👖🙅🏼‍♀️',
+      'That\'s a big honka chonk!',
+      'I\'m a little crusty today'
+    ];
+    let profileBubbleTimeout = null;
+
+    function showProfileBubble() {
+      const bubble = document.getElementById('profile-bubble');
+      const phrase = profilePhrases[Math.floor(Math.random() * profilePhrases.length)];
+      bubble.textContent = phrase;
+
+      // Reset animation
+      bubble.classList.remove('visible');
+      clearTimeout(profileBubbleTimeout);
+      requestAnimationFrame(() => {
+        bubble.classList.add('visible');
+        profileBubbleTimeout = setTimeout(() => {
+          bubble.classList.remove('visible');
+        }, 3000);
+      });
+    }
+
     function toggleRoni() {
       const popup = document.getElementById('roni-popup');
       if (popup.classList.contains('visible')) {
