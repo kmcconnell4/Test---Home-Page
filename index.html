@@ -11,12 +11,20 @@
       box-sizing: border-box;
     }
 
+    @keyframes ripple-bg {
+      0%   { background-position: 0% 50%; }
+      50%  { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
     body {
       min-height: 100vh;
       display: flex;
       justify-content: center;
       align-items: center;
-      background: linear-gradient(135deg, #0f4a9e, #6b2fa0);
+      background: linear-gradient(135deg, #0f4a9e, #3a2fa0, #6b2fa0, #4a1a8e, #0f4a9e);
+      background-size: 400% 400%;
+      animation: ripple-bg 12s ease infinite;
       font-family: 'Segoe UI', sans-serif;
     }
 
@@ -57,6 +65,12 @@
       margin-bottom: 1.5rem;
     }
 
+    @keyframes rainbow-throb {
+      0%   { background-position: 0% 50%;   transform: translateY(-3px) scale(1.05); }
+      50%  { background-position: 100% 50%; transform: translateY(-3px) scale(1.1); }
+      100% { background-position: 0% 50%;   transform: translateY(-3px) scale(1.05); }
+    }
+
     .contact-btn {
       display: inline-block;
       padding: 0.85rem 2.5rem;
@@ -73,23 +87,185 @@
     }
 
     .contact-btn:hover {
-      transform: translateY(-3px) scale(1.05);
-      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.35);
-      background: #1a6fe8;
+      background: linear-gradient(270deg, #c97070, #c9a070, #c9c970, #70a870, #7090c9, #9070c9, #c97070);
+      background-size: 600% 600%;
       color: white;
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.35);
+      animation: rainbow-throb 2s ease infinite;
     }
 
     .contact-btn:active {
       transform: translateY(0);
     }
+
+    .profile-photo {
+      cursor: pointer;
+    }
+
+    @keyframes bounce-in {
+      0%   { right: -500px; }
+      40%  { right: 20px; }
+      50%  { right: 50px; }
+      60%  { right: 20px; }
+      70%  { right: 40px; }
+      80%  { right: 20px; }
+      90%  { right: 30px; }
+      100% { right: 20px; }
+    }
+
+    .roni-popup {
+      position: fixed;
+      right: -500px;
+      bottom: 20px;
+      z-index: 100;
+      display: flex;
+      align-items: flex-end;
+      gap: 0;
+    }
+
+    .roni-popup.slide-out {
+      right: -500px;
+      transition: right 0.6s ease-in;
+    }
+
+    .roni-popup.visible {
+      animation: bounce-in 1.2s ease forwards;
+    }
+
+    .roni-popup img {
+      width: 200px;
+      height: 200px;
+      border-radius: 16px;
+      object-fit: cover;
+      border: 4px solid white;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    }
+
+    .speech-bubble {
+      position: relative;
+      background: white;
+      border-radius: 16px;
+      padding: 12px 18px;
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: #333;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+      margin-right: -10px;
+      margin-bottom: 140px;
+      white-space: nowrap;
+    }
+
+    .speech-bubble::after {
+      content: '';
+      position: absolute;
+      right: -12px;
+      bottom: 20px;
+      width: 0;
+      height: 0;
+      border-top: 10px solid transparent;
+      border-bottom: 10px solid transparent;
+      border-left: 14px solid white;
+    }
   </style>
 </head>
 <body>
   <div class="container">
-    <img src="Photos/Winkeler_Kirsten.jpg" alt="Profile photo" class="profile-photo">
+    <img src="Photos/Winkeler_Kirsten.jpg" alt="Profile photo" class="profile-photo" onclick="toggleRoni()">
     <h1>Hello World!</h1>
     <p class="welcome-msg">Welcome to my page! Thanks for stopping by.</p>
-    <a href="mailto:contact@example.com" class="contact-btn">Contact me</a>
+    <a href="mailto:contact@example.com" class="contact-btn" onclick="launchConfetti(event)">Contact me</a>
   </div>
+  <div class="roni-popup" id="roni-popup">
+    <div class="speech-bubble">BORK! BORK!</div>
+    <img src="Photos/roni.jpeg" alt="Roni">
+  </div>
+  <canvas id="confetti-canvas"></canvas>
+  <script>
+    function toggleRoni() {
+      const popup = document.getElementById('roni-popup');
+      if (popup.classList.contains('visible')) {
+        popup.classList.remove('visible');
+        popup.classList.add('slide-out');
+        popup.addEventListener('transitionend', function handler() {
+          popup.classList.remove('slide-out');
+          popup.removeEventListener('transitionend', handler);
+        });
+      } else {
+        popup.classList.remove('slide-out');
+        popup.classList.add('visible');
+      }
+    }
+
+    const canvas = document.getElementById('confetti-canvas');
+    const ctx = canvas.getContext('2d');
+    canvas.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:9999';
+    let particles = [];
+    let animating = false;
+
+    function resizeCanvas() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
+
+    const colors = ['#c97070','#c9a070','#c9c970','#70a870','#7090c9','#9070c9','#e8a0b8','#70c9c0'];
+
+    function launchConfetti(e) {
+      const rect = e.target.getBoundingClientRect();
+      const originX = rect.left + rect.width / 2;
+      const originY = rect.top + rect.height / 2;
+
+      for (let i = 0; i < 120; i++) {
+        const angle = Math.random() * Math.PI * 2;
+        const speed = 4 + Math.random() * 8;
+        particles.push({
+          x: originX,
+          y: originY,
+          vx: Math.cos(angle) * speed,
+          vy: Math.sin(angle) * speed - 4,
+          size: 4 + Math.random() * 4,
+          color: colors[Math.floor(Math.random() * colors.length)],
+          rotation: Math.random() * 360,
+          rotSpeed: (Math.random() - 0.5) * 12,
+          life: 1,
+          decay: 0.008 + Math.random() * 0.008
+        });
+      }
+      if (!animating) {
+        animating = true;
+        animateConfetti();
+      }
+    }
+
+    function animateConfetti() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      particles.forEach(p => {
+        p.x += p.vx;
+        p.y += p.vy;
+        p.vy += 0.15;
+        p.vx *= 0.99;
+        p.rotation += p.rotSpeed;
+        p.life -= p.decay;
+
+        ctx.save();
+        ctx.translate(p.x, p.y);
+        ctx.rotate(p.rotation * Math.PI / 180);
+        ctx.globalAlpha = Math.max(0, p.life);
+        ctx.fillStyle = p.color;
+        ctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size * 0.6);
+        ctx.restore();
+      });
+
+      particles = particles.filter(p => p.life > 0);
+
+      if (particles.length > 0) {
+        requestAnimationFrame(animateConfetti);
+      } else {
+        animating = false;
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+      }
+    }
+  </script>
 </body>
 </html>
