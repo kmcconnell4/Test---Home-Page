@@ -437,4 +437,24 @@ h1 {
   .container {
     width: 100%;
   }
+
+  .profile-bubble {
+    top: calc(100% + 12px);
+    left: 50%;
+    transform: translateX(-50%) scale(0.8);
+  }
+
+  .profile-bubble::after {
+    top: auto;
+    bottom: 100%;
+    right: auto;
+    left: 50%;
+    transform: translateX(-50%);
+    border: 8px solid transparent;
+    border-bottom-color: white;
+  }
+
+  .profile-bubble.visible {
+    transform: translateX(-50%) scale(1);
+  }
 }
