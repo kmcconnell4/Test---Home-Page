@@ -101,6 +101,10 @@ body {
   transition: opacity 0.3s ease, transform 0.3s ease;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
   z-index: 100;
+  max-width: 300px;
+  width: max-content;
+  white-space: normal;
+  word-wrap: break-word;
 }
 
 .profile-bubble::after {
@@ -442,6 +446,7 @@ h1 {
     top: calc(100% + 12px);
     left: 50%;
     transform: translateX(-50%) scale(0.8);
+    max-width: calc(100vw - 4rem);
   }
 
   .profile-bubble::after {
